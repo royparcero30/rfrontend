@@ -29,13 +29,13 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: #141414; /* Deep black background */
-  color: #e5e5e5; /* Light gray text for better contrast */
+  color: #080000; /* Light gray text for better contrast */
 }
 
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-  color: #fff; /* White text for headlines */
+  color: #030000; /* White text for headlines */
 }
 
 button {
@@ -46,7 +46,7 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #e50914; /* Netflix Red */
-  color: #fff; /* White text on red button */
+  color: #160101; /* White text on red button */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -64,7 +64,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #000000;
-    background-color: #ffffff; /* White background for light mode */
+    background-color: #080000; /* White background for light mode */
   }
 
   a:hover {
