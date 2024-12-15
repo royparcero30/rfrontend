@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';  
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Form from 'react-bootstrap/Form';
@@ -11,33 +10,33 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import { jwtDecode } from 'jwt-decode';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
-import { FormControl, Dropdown, DropdownButton } from 'react-bootstrap';
-import { API_ENDPOINT } from './Api';
+import { API_ENDPOINT } from './App';
+import Swal from 'sweetalert2';
+import Modal from "react-bootstrap/Modal";
 
-function Dashboard() {
+import backgroundImage from './assets/darkfb.jpg';
 
+function Dashboard () {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchDecodeUserID = async () => {
+        const fetchDecodedUserID = async () => {
             try {
-                const response = JSON.parse(localStorage.getItem('token'))
+                const response = JSON.parse(localStorage.getItem('token'));
                 setUser(response.data);
 
-                const decode_token = jwtDecode(response.data.token);
-                setUser(decode_token);
-
+                const decoded_token = jwtDecode(response.data.token);
+                setUser(decoded_token);
             } catch (error) {
                 navigate("/login");
             }
         };
 
-        fetchDecodeUserID();
+        fetchDecodedUserID();
     }, []);
 
+    /* LOGOUT */
     const handleLogout = async () => {
         try {
             localStorage.removeItem('token');
@@ -47,34 +46,313 @@ function Dashboard() {
         }
     };
 
+    /* DISPLAY USERS */
+    const [users, setUsers] = useState([]);
+    const userdata = JSON.parse(localStorage.getItem('token'));
+    const token = userdata.data.token;
+
+    const headers = {
+        accept: 'application/json',
+        Authorization: token
+    };
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    const fetchUsers = async () => {
+        await axios.get(`${API_ENDPOINT}/user`, { headers: headers }).then(({data}) => {
+            setUsers(data);
+        });
+    };
+
+    /* DELETE USER */
+    const deleteUser = async (id) => {
+        const isConfirm = await Swal.fire({
+            title: 'Are you sure?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#1877f2',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'YES'
+        }).then((result) => {
+            return result.isConfirmed;
+        });
+
+        if (!isConfirm) {
+            return;
+        }
+
+        await axios.delete(`${API_ENDPOINT}/user/${id}`, { headers: headers }).then(({data}) => {
+            Swal.fire({
+                icon: "success",
+                text: "Successfully deleted User!"
+            });
+            fetchUsers();
+        }).catch(({response: {data}}) => {
+            Swal.fire({
+                text: data.message,
+                icon: "error"
+            });
+        });
+    };
+
+    /* CREATE USER */
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const [fullname, setFullname] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [validationError, setValidationError] = useState({});
+
+    const createUser = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('fullname', fullname);
+        formData.append('username', username);
+        formData.append('password', password);
+
+        await axios.post(`${API_ENDPOINT}/auth/register`, { fullname, username, password }, { headers: headers }).then(({data}) => {
+            Swal.fire({
+                icon: "success",
+                text: data.message
+            });
+            fetchUsers();
+        }).catch(({response}) => {
+            if (response.status === 422) {
+                setValidationError(response.data.errors);
+            } else {
+                Swal.fire({
+                    text: response.data.message,
+                    icon: "error"
+                });
+            }
+        });
+    };
+
+    /* READ USER DETAILS */
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [show1, setShow1] = useState(false);
+
+    const handleClose1 = () => setShow1(false);
+    const handleShow1 = (row_users) => {
+        setSelectedUser(row_users);
+        setShow1(true);
+    };
+
+    /* UPDATE USER */
+    const [showUpdate, setShowUpdate] = useState(false);
+    const [newFullname, setNewFullname] = useState("");
+    const [newUsername, setNewUsername] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [editUser, setEditUser] = useState(null);
+
+    const handleShowUpdate = (user) => {
+        setEditUser(user);
+        setNewFullname(user.fullname);
+        setNewUsername(user.username);
+        setNewPassword("");
+        setShowUpdate(true);
+    };
+
+    const handleCloseUpdate = () => setShowUpdate(false);
+
+    const updateUser = async (e) => {
+        e.preventDefault();
+
+        if (!editUser) return;
+
+        const updatedData = {
+            fullname: newFullname,
+            username: newUsername,
+            password: newPassword,
+        };
+
+        try {
+            const response = await axios.put(
+                `${API_ENDPOINT}/user/${editUser.user_id}`,
+                updatedData,
+                { headers: headers }
+            );
+
+            Swal.fire({
+                icon: 'success',
+                text: response.data.message,
+            });
+
+            setShowUpdate(false);
+            fetchUsers();
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                text: error.response ? error.response.data.message : 'An error occurred',
+            });
+        }
+    };
+
     return (
         <>
-        <Navbar bg="dark" variant="dark" style={{ backgroundColor: '#141414' }}>
-
-            <Container>
-                <Navbar.Brand href="home">Naga College Foundation, Inc.</Navbar.Brand>
-                <Nav className="me-auto">
-                    <Nav.Link href="#users">Users</Nav.Link>
-                    <Nav.Link href="#departments">Departments</Nav.Link>
-                    <Nav.Link href="#courses">Courses</Nav.Link>
-                </Nav>
-
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="ms-auto">
-                        <NavDropdown title={user ? `User: ${user.username}` : 'Dropdown'} id="basic-nav-dropdown" align="end">
-                            <NavDropdown.Item href="#">Profile</NavDropdown.Item>
-                            <NavDropdown.Item href="#">Settings</NavDropdown.Item>
-                            <NavDropdown.Item href="#" onClick={handleLogout}>Logout</NavDropdown.Item>
-                        </NavDropdown>
+            <Navbar style={{
+                backgroundColor: '#333',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+            }} data-bs-theme="dark">
+                <Container>
+                    <Navbar.Brand href="#Facebook" style={{color: '#00bcd4', fontSize: '24px', fontWeight: 'bold'}}>Facebook</Navbar.Brand>
+                    <Nav className="me-auto">
+                        <Nav.Link href="#Profile" style={{color: '#00bcd4', fontSize: '15px', marginLeft: '13px'}}>Profile</Nav.Link>
+                        <Nav.Link href="#Group" style={{color: '#00bcd4', fontSize: '15px', marginLeft: '13px'}}>Group</Nav.Link>
+                        <Nav.Link href="#Friends" style={{color: '#00bcd4', fontSize: '15px', marginLeft: '13px'}}>Friends</Nav.Link>
                     </Nav>
-                </Navbar.Collapse>
-            </Container>
-        </Navbar>
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="ms-auto">
+                            <NavDropdown title= {user ? `User: ${user.username}` : 'Dropdown'} id="basic-nav-dropdown" align="end">
+                                <NavDropdown.Item href="#" style={{color: '#00bcd4'}}>Settings</NavDropdown.Item>
+                                <NavDropdown.Item href="#" style={{color: '#00bcd4'}}>Info</NavDropdown.Item>
+                                <NavDropdown.Item href="#" onClick={handleLogout} style={{color: '#00bcd4'}}>Logout</NavDropdown.Item>
+                            </NavDropdown>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
 
-        {/* Set background color of the main page */}
-        <div style={{ backgroundColor: '#141414', minHeight: '100vh', color: 'white' }}>
-            {/* Page content goes here */}
-        </div>
+            <div style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'cover', 
+                backgroundPosition: 'center',
+                minHeight: '100vh', 
+                backgroundAttachment: 'fixed',
+                paddingTop: '50px'
+            }}>
+                <div className="container" style={{
+                    marginTop: '30px', 
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', 
+                    padding: '20px', 
+                    borderRadius: '10px',
+                    color: 'white',
+                }}>
+                    <div className="col-12">
+                        <Button variant="primary mb-2 float-end" onClick={handleShow} style={{
+                            background: '#1877f2', 
+                            borderColor: '#1877f2', 
+                            color: '#fff'
+                        }}>Create User</Button>
+                    </div>
+
+                    <table className="table table-bordered" style={{
+                        background: '#444', // Darker background for the table
+                        borderRadius: '8px',
+                        color: '#fff', // White text in table
+                    }}>
+                        <thead style={{background: '#1877f2', color: '#fff'}}>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.length > 0 ? users.map((row_users, index) => (
+                                <tr key={index}>
+                                    <td>{row_users.user_id}</td>
+                                    <td>{row_users.username}</td>
+                                    <td>{row_users.fullname}</td>
+                                    <td>
+                                        <Button variant="primary" onClick={() => handleShow1(row_users)} style={{
+                                            backgroundColor: '#1877f2', 
+                                            borderColor: '#1877f2', 
+                                            color: '#fff'
+                                        }}>Details</Button>
+                                        <Button variant="danger" onClick={() => deleteUser(row_users.user_id)} style={{
+                                            backgroundColor: '#dc3545', 
+                                            borderColor: '#dc3545', 
+                                            color: '#fff', 
+                                            marginLeft: '10px'
+                                        }}>Delete</Button>
+                                        <Button variant="warning" onClick={() => handleShowUpdate(row_users)} style={{
+                                            backgroundColor: '#f39c12', 
+                                            borderColor: '#f39c12', 
+                                            color: '#fff', 
+                                            marginLeft: '10px'
+                                        }}>Update</Button>
+                                    </td>
+                                </tr>
+                            )) : <tr><td colSpan="4">No users found</td></tr>}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <Modal show={showUpdate} onHide={handleCloseUpdate}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update User</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={updateUser}>
+                        <Form.Group className="mb-3" controlId="formFullname">
+                            <Form.Label>Full Name</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                placeholder="Enter Full Name" 
+                                value={newFullname} 
+                                onChange={(e) => setNewFullname(e.target.value)} 
+                                required 
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formUsername">
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control 
+                                type="text" 
+                                placeholder="Enter Username" 
+                                value={newUsername} 
+                                onChange={(e) => setNewUsername(e.target.value)} 
+                                required 
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="formPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control 
+                                type="password" 
+                                placeholder="Enter Password" 
+                                value={newPassword} 
+                                onChange={(e) => setNewPassword(e.target.value)} 
+                            />
+                        </Form.Group>
+                        <Button variant="primary" type="submit" style={{
+                            backgroundColor: '#1877f2', 
+                            borderColor: '#1877f2', 
+                            color: '#fff'
+                        }}>
+                            Update
+                        </Button>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+
+
+            <Modal show={show1} onHide={handleClose1}>
+                <Modal.Header closeButton>
+                    <Modal.Title>User Details</Modal.Title>
+                    </Modal.Header>
+                        <Modal.Body>
+                            {selectedUser ? (
+                            <>
+                                <p><strong>Full Name:</strong> {selectedUser.fullname}</p>
+                                <p><strong>Username:</strong> {selectedUser.username}</p>
+                                <p><strong>Created At:</strong> {new Date(selectedUser.created_at).toLocaleString()}</p>
+                            </>
+                         ) : (
+                                <p>Loading...</p>
+                        )}
+                        </Modal.Body>
+                    <Modal.Footer>
+                 <Button variant="secondary" onClick={handleClose1}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+            
         </>
     );
 }

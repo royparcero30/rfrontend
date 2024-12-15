@@ -1,141 +1,159 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import "bootstrap/dist/css/bootstrap.css";
-import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-
-import { API_ENDPOINT } from "./Api"; // Make sure your API endpoint is correct
+import { API_ENDPOINT } from './Api';
 
 function Login() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-    const [user, setUser] = useState(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${API_ENDPOINT}/auth/login`, { username, password });
+      localStorage.setItem("token", JSON.stringify(response));
+      setError('');
+      navigate('/dashboard');
+    } catch (error) {
+      setError('Invalid username or password');
+    }
+  };
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = JSON.parse(localStorage.getItem('token'));
-                setUser(response.data);
-                navigate("/dashboard");
-            } catch (error) {
-                navigate("/login");
-            }
-        };
-        fetchUser();
-    }, []);
+  return (
+    <div style={{
+      position: 'relative',
+      backgroundImage: 'url("src/assets/facebook-background.jpg")', // Background image
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'flex-start',  // Align content to the left
+      alignItems: 'center',
+      color: 'white',
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+    }}>
+      {/* Dark overlay with gradient effect */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3))',
+        zIndex: 1
+      }}></div>
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+      <Container style={{
+        zIndex: 2, 
+        marginTop: '50px', 
+        marginLeft: '100px', // Adjust left margin to move the container to the left
+        maxWidth: '500px'  // Optionally limit the container width
+      }}>
+        <Row className="justify-content-start"> {/* Align row items to the left */}
+          <Col md={12}>
+            <div className="login-form" style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark form background
+              padding: '30px',
+              borderRadius: '15px',
+              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)'
+            }}>
+              {/* Custom logo */}
+              <div className="login-logo" style={{
+                textAlign: 'center',
+                marginBottom: '30px',
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: '#00bcd4' // Teal color for the logo
+              }}>
+                <span style={{ color: '#00bcd4' }}>Facebook</span>
+              </div>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            const response = await axios.post(`${API_ENDPOINT}/auth/login`, {
-                username,
-                password,
-            });
-
-            localStorage.setItem("token", JSON.stringify(response));
-            setError('');
-            navigate("/dashboard");
-        } catch (error) {
-            setError('Invalid username or password');
-        }
-    };
-
-    return (
-        <>
-            <Navbar bg="dark" variant="dark">
-                <Container>
-                    <Navbar.Brand href="#home">NET FLIX.</Navbar.Brand>
-                </Container>
-            </Navbar>
-
-            {/* Background Image & Dark Overlay */}
-            <div 
-                style={{
-                    backgroundImage: 'url("https://as1.ftcdn.net/v2/jpg/04/81/76/22/1000_F_481762281_Xcvl3QsGh1pBMvQuyKIoIqq8aYksXEwX.jpg")', // Add your background image URL here
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    position: 'relative',
-                    minHeight: '100vh',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    color: 'white',
-                }}
-            >
-                {/* Dark overlay */}
-                <div 
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formUsername">
+                  <Form.Control
+                    className="form-control-sm rounded-0"
+                    type="text"
+                    placeholder="Email or Phone"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
                     style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0, 0, 0, 0.5)', // Dark overlay
+                      padding: '12px',
+                      fontSize: '18px',
+                      marginBottom: '20px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)', // Slightly darker input background
+                      color: 'white',
+                      border: '1px solid #444',
+                      borderRadius: '8px'
                     }}
-                >
-                    <Container>
-                        <Row className="justify-content-md-center">
-                            <Col md={4}>
-                                <div className="login-form" style={{ position: 'relative', zIndex: 1 }}>
-                                    <center style={{ marginBottom: '20px' }}>
-                                        NETFLIX LOG IN REGISTER
-                                    </center>
+                  />
+                </Form.Group>
 
-                                    <div className="card">
-                                        <div className="card-body login-card-body">
-                                            <Form onSubmit={handleSubmit}>
-                                                <Form.Group controlId="formUsername">
-                                                    <Form.Label>Username:</Form.Label>
-                                                    <Form.Control 
-                                                        className='form-control-sm rounded-0' 
-                                                        type="text" 
-                                                        placeholder="Enter Username" 
-                                                        value={username} 
-                                                        onChange={(e) => setUsername(e.target.value)} 
-                                                        required 
-                                                    />
-                                                </Form.Group><br />
+                <Form.Group controlId="formPassword">
+                  <Form.Control
+                    className="form-control-sm rounded-0"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    style={{
+                      padding: '12px',
+                      fontSize: '18px',
+                      marginBottom: '20px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)', // Slightly darker input background
+                      color: 'white',
+                      border: '1px solid #444',
+                      borderRadius: '8px'
+                    }}
+                  />
+                </Form.Group>
 
-                                                <Form.Group controlId="formPassword">
-                                                    <Form.Label>Password</Form.Label>
-                                                    <Form.Control 
-                                                        className='form-control-sm rounded-0' 
-                                                        type="password" 
-                                                        placeholder="Enter Password" 
-                                                        value={password} 
-                                                        onChange={(e) => setPassword(e.target.value)} 
-                                                        required 
-                                                    />
-                                                </Form.Group><br />
+                {error && <p style={{
+                  color: 'red',
+                  textAlign: 'center',
+                  fontSize: '14px',
+                  marginBottom: '20px'
+                }}>{error}</p>}
 
-                                                <Form.Group controlId="formButton">
-                                                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                                                    <Button variant="danger" className="btn btn-block btn-flat rounded-0" size="sm" block="block" type="submit">
-                                                        Log in Now
-                                                    </Button>
-                                                </Form.Group>
-                                            </Form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>
+                <Form.Group controlId="formButton">
+                  <Button
+                    variant="primary"
+                    className="btn-block bg-custom btn-flat rounded-0"
+                    size="lg"
+                    type="submit"
+                    style={{
+                      padding: '15px',
+                      fontSize: '18px',
+                      width: '100%',
+                      backgroundColor: '#00bcd4', // Teal for button
+                      borderRadius: '8px',
+                      fontWeight: 'bold',
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                    Log In
+                  </Button>
+                </Form.Group>
+              </Form>
+
+              <div className="login-footer" style={{ marginTop: '20px', textAlign: 'center' }}>
+                <p style={{ fontSize: '14px', color: '#bbb' }}>By logging in, you agree to our <a href="/terms" style={{ color: '#00bcd4' }}>Terms of Service</a> and <a href="/privacy" style={{ color: '#00bcd4' }}>Privacy Policy</a></p>
+              </div>
             </div>
-        </>
-    );
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  );
 }
 
 export default Login;
