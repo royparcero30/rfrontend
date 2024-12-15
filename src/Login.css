@@ -1,0 +1,89 @@
+/* login.css */
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  /* Apply fade-in effect */
+  .welcome-back h2, 
+  .welcome-back p, 
+  .welcome-back a {
+    animation: fadeIn 2s ease-out forwards;  /* 'forwards' keeps the final opacity at 1 */
+    opacity: 0;  /* Initially hidden */
+  }
+  
+  /* Navbar styling */
+  .navbar {
+    padding: 5px 20px;
+    height: auto;
+  }
+  
+  .navbar-brand {
+    font-size: 1.8rem; /* Increased font size */
+  }
+  
+  .navbar .ms-auto {
+    display: flex;
+    align-items: center;
+  }
+  
+  .navbar .d-flex form {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .navbar .d-flex .form-control {
+    max-width: 200px;
+    width: auto;
+  }
+  
+  .navbar .d-flex button {
+    height: 38px;
+    padding: 0 20px;
+  }
+  
+  /* Welcome container */
+  .welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: calc(100vh - 56px);
+  }
+  
+  .welcome-back {
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    font-size: 26px; /* Slightly increased font size */
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  .welcome-back h2 {
+    font-size: 40px; /* Increased font size */
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .welcome-back p {
+    font-size: 18px; /* Increased font size */
+    color: #666;
+    margin-top: 10px;
+  }
+  
+  .welcome-back a {
+    font-size: 18px; /* Increased font size */
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .welcome-back a:hover {
+    text-decoration: underline;
+  }
+  
