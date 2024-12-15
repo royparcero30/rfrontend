@@ -73,6 +73,6 @@ button:focus-visible {
 
   button {
     background-color: #f9f9f9; /* Light background for buttons in light mode */
-    color: #141414; /* Dark text for buttons */
+    color: #0c0c0c; /* Dark text for buttons */
   }
 }

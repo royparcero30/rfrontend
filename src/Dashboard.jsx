@@ -21,7 +21,6 @@ function Dashboard() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
-
     useEffect(() => {
         const fetchDecodeUserID = async () => {
             try {
@@ -40,7 +39,6 @@ function Dashboard() {
     }, []);
 
     const handleLogout = async () => {
-
         try {
             localStorage.removeItem('token');
             navigate("/login");
@@ -51,7 +49,7 @@ function Dashboard() {
 
     return (
         <>
-        <Navbar bg="success" data-bs-theme="dark">
+        <Navbar bg="dark" variant="dark" style={{ backgroundColor: '#141414' }}>
 
             <Container>
                 <Navbar.Brand href="home">Naga College Foundation, Inc.</Navbar.Brand>
@@ -62,9 +60,8 @@ function Dashboard() {
                 </Nav>
 
                 <Navbar.Collapse id="basic-navbar-nav">
-                    
                     <Nav className="ms-auto">
-                        <NavDropdown title={user ? 'User: ${user.username}' : 'Dropdown'} id="basic-nav-dropdown" align="end">
+                        <NavDropdown title={user ? `User: ${user.username}` : 'Dropdown'} id="basic-nav-dropdown" align="end">
                             <NavDropdown.Item href="#">Profile</NavDropdown.Item>
                             <NavDropdown.Item href="#">Settings</NavDropdown.Item>
                             <NavDropdown.Item href="#" onClick={handleLogout}>Logout</NavDropdown.Item>
@@ -73,8 +70,13 @@ function Dashboard() {
                 </Navbar.Collapse>
             </Container>
         </Navbar>
+
+        {/* Set background color of the main page */}
+        <div style={{ backgroundColor: '#141414', minHeight: '100vh', color: 'white' }}>
+            {/* Page content goes here */}
+        </div>
         </>
-    )
+    );
 }
 
-export default Dashboard
+export default Dashboard;
