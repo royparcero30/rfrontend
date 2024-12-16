@@ -14,7 +14,7 @@ import { API_ENDPOINT } from './App';
 import Swal from 'sweetalert2';
 import Modal from "react-bootstrap/Modal";
 
-import backgroundImage from './assets/darkfb.jpg';
+import backgroundImage from './assets/netflix.jpg.jfif';
 
 function Dashboard () {
     const [user, setUser] = useState(null);
@@ -72,7 +72,7 @@ function Dashboard () {
             title: 'Are you sure?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#1877f2',
+            confirmButtonColor: '#e50914',
             cancelButtonColor: '#d33',
             confirmButtonText: 'YES'
         }).then((result) => {
@@ -196,22 +196,22 @@ function Dashboard () {
     return (
         <>
             <Navbar style={{
-                backgroundColor: '#333',
+                backgroundColor: '#e50914',  // Red background for navbar
                 boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
             }} data-bs-theme="dark">
                 <Container>
-                    <Navbar.Brand href="#Facebook" style={{color: '#00bcd4', fontSize: '24px', fontWeight: 'bold'}}>Facebook</Navbar.Brand>
+                    <Navbar.Brand href="#Facebook" style={{color: '#fff', fontSize: '24px', fontWeight: 'bold'}}>Netflix</Navbar.Brand>
                     <Nav className="me-auto">
-                        <Nav.Link href="#Profile" style={{color: '#00bcd4', fontSize: '15px', marginLeft: '13px'}}>Profile</Nav.Link>
-                        <Nav.Link href="#Group" style={{color: '#00bcd4', fontSize: '15px', marginLeft: '13px'}}>Group</Nav.Link>
-                        <Nav.Link href="#Friends" style={{color: '#00bcd4', fontSize: '15px', marginLeft: '13px'}}>Friends</Nav.Link>
+                        <Nav.Link href="#Profile" style={{color: '#fff', fontSize: '15px', marginLeft: '13px'}}>Movies</Nav.Link>
+                        <Nav.Link href="#Group" style={{color: '#fff', fontSize: '15px', marginLeft: '13px'}}>Series</Nav.Link>
+                        <Nav.Link href="#Friends" style={{color: '#fff', fontSize: '15px', marginLeft: '13px'}}>Myprofile</Nav.Link>
                     </Nav>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">
-                            <NavDropdown title= {user ? `User: ${user.username}` : 'Dropdown'} id="basic-nav-dropdown" align="end">
-                                <NavDropdown.Item href="#" style={{color: '#00bcd4'}}>Settings</NavDropdown.Item>
-                                <NavDropdown.Item href="#" style={{color: '#00bcd4'}}>Info</NavDropdown.Item>
-                                <NavDropdown.Item href="#" onClick={handleLogout} style={{color: '#00bcd4'}}>Logout</NavDropdown.Item>
+                            <NavDropdown title={user ? `User: ${user.username}` : 'Dropdown'} id="basic-nav-dropdown" align="end">
+                                <NavDropdown.Item href="#" style={{color: '#e50914'}}>Settings</NavDropdown.Item>
+                                <NavDropdown.Item href="#" style={{color: '#e50914'}}>Info</NavDropdown.Item>
+                                <NavDropdown.Item href="#" onClick={handleLogout} style={{color: '#e50914'}}>Logout</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                     </Navbar.Collapse>
@@ -235,18 +235,18 @@ function Dashboard () {
                 }}>
                     <div className="col-12">
                         <Button variant="primary mb-2 float-end" onClick={handleShow} style={{
-                            background: '#1877f2', 
-                            borderColor: '#1877f2', 
+                            background: '#e50914', 
+                            borderColor: '#e50914', 
                             color: '#fff'
                         }}>Create User</Button>
                     </div>
 
                     <table className="table table-bordered" style={{
-                        background: '#444', // Darker background for the table
+                        background: '#333',  // Darker background for the table
                         borderRadius: '8px',
                         color: '#fff', // White text in table
                     }}>
-                        <thead style={{background: '#1877f2', color: '#fff'}}>
+                        <thead style={{background: '#e50914', color: '#fff'}}>
                             <tr>
                                 <th>ID</th>
                                 <th>Username</th>
@@ -262,8 +262,8 @@ function Dashboard () {
                                     <td>{row_users.fullname}</td>
                                     <td>
                                         <Button variant="primary" onClick={() => handleShow1(row_users)} style={{
-                                            backgroundColor: '#1877f2', 
-                                            borderColor: '#1877f2', 
+                                            backgroundColor: '#e50914', 
+                                            borderColor: '#e50914', 
                                             color: '#fff'
                                         }}>Details</Button>
                                         <Button variant="danger" onClick={() => deleteUser(row_users.user_id)} style={{
@@ -286,6 +286,7 @@ function Dashboard () {
                 </div>
             </div>
 
+            {/* Update Modal */}
             <Modal show={showUpdate} onHide={handleCloseUpdate}>
                 <Modal.Header closeButton>
                     <Modal.Title>Update User</Modal.Title>
@@ -322,8 +323,8 @@ function Dashboard () {
                             />
                         </Form.Group>
                         <Button variant="primary" type="submit" style={{
-                            backgroundColor: '#1877f2', 
-                            borderColor: '#1877f2', 
+                            backgroundColor: '#e50914', 
+                            borderColor: '#e50914', 
                             color: '#fff'
                         }}>
                             Update
@@ -332,27 +333,26 @@ function Dashboard () {
                 </Modal.Body>
             </Modal>
 
-
+            {/* User Details Modal */}
             <Modal show={show1} onHide={handleClose1}>
                 <Modal.Header closeButton>
                     <Modal.Title>User Details</Modal.Title>
-                    </Modal.Header>
-                        <Modal.Body>
-                            {selectedUser ? (
-                            <>
-                                <p><strong>Full Name:</strong> {selectedUser.fullname}</p>
-                                <p><strong>Username:</strong> {selectedUser.username}</p>
-                                <p><strong>Created At:</strong> {new Date(selectedUser.created_at).toLocaleString()}</p>
-                            </>
-                         ) : (
-                                <p>Loading...</p>
-                        )}
-                        </Modal.Body>
-                    <Modal.Footer>
-                 <Button variant="secondary" onClick={handleClose1}>Close</Button>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedUser ? (
+                        <>
+                            <p><strong>Full Name:</strong> {selectedUser.fullname}</p>
+                            <p><strong>Username:</strong> {selectedUser.username}</p>
+                            <p><strong>Created At:</strong> {new Date(selectedUser.created_at).toLocaleString()}</p>
+                        </>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose1}>Close</Button>
                 </Modal.Footer>
             </Modal>
-            
         </>
     );
 }

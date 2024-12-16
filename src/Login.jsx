@@ -30,12 +30,12 @@ function Login() {
   return (
     <div style={{
       position: 'relative',
-      backgroundImage: 'url("src/assets/facebook-background.jpg")', // Background image
+      backgroundImage: 'url("src/assets/netflix.jpg.jfif")', // Netflix background
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       height: '100vh',
       display: 'flex',
-      justifyContent: 'flex-start',  // Align content to the left
+      justifyContent: 'center', // Centering the login form horizontally
       alignItems: 'center',
       color: 'white',
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
@@ -47,33 +47,30 @@ function Login() {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3))',
+        background: 'linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.5))', // Dark gradient overlay
         zIndex: 1
       }}></div>
 
       <Container style={{
-        zIndex: 2, 
-        marginTop: '50px', 
-        marginLeft: '100px', // Adjust left margin to move the container to the left
-        maxWidth: '500px'  // Optionally limit the container width
+        zIndex: 2,
+        maxWidth: '400px', // Limit the width for a more compact form
+        padding: '30px',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for form
+        borderRadius: '8px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
       }}>
-        <Row className="justify-content-start"> {/* Align row items to the left */}
+        <Row className="justify-content-center">
           <Col md={12}>
-            <div className="login-form" style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark form background
-              padding: '30px',
-              borderRadius: '15px',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5)'
-            }}>
+            <div className="login-form">
               {/* Custom logo */}
               <div className="login-logo" style={{
                 textAlign: 'center',
                 marginBottom: '30px',
-                fontSize: '36px',
+                fontSize: '40px',
                 fontWeight: 'bold',
-                color: '#00bcd4' // Teal color for the logo
+                color: '#e50914', // Netflix red color for logo
               }}>
-                <span style={{ color: '#00bcd4' }}>Facebook</span>
+                <span style={{ color: '#e50914' }}>Netflix</span>
               </div>
 
               <Form onSubmit={handleSubmit}>
@@ -86,7 +83,7 @@ function Login() {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     style={{
-                      padding: '12px',
+                      padding: '15px',
                       fontSize: '18px',
                       marginBottom: '20px',
                       backgroundColor: 'rgba(255, 255, 255, 0.1)', // Slightly darker input background
@@ -106,7 +103,7 @@ function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     style={{
-                      padding: '12px',
+                      padding: '15px',
                       fontSize: '18px',
                       marginBottom: '20px',
                       backgroundColor: 'rgba(255, 255, 255, 0.1)', // Slightly darker input background
@@ -118,7 +115,7 @@ function Login() {
                 </Form.Group>
 
                 {error && <p style={{
-                  color: 'red',
+                  color: '#ff0a0a', // Bright red for error message
                   textAlign: 'center',
                   fontSize: '14px',
                   marginBottom: '20px'
@@ -134,10 +131,11 @@ function Login() {
                       padding: '15px',
                       fontSize: '18px',
                       width: '100%',
-                      backgroundColor: '#00bcd4', // Teal for button
+                      backgroundColor: '#e50914', // Netflix red for button
                       borderRadius: '8px',
                       fontWeight: 'bold',
-                      textTransform: 'uppercase'
+                      textTransform: 'uppercase',
+                      border: 'none'
                     }}
                   >
                     Log In
@@ -146,7 +144,7 @@ function Login() {
               </Form>
 
               <div className="login-footer" style={{ marginTop: '20px', textAlign: 'center' }}>
-                <p style={{ fontSize: '14px', color: '#bbb' }}>By logging in, you agree to our <a href="/terms" style={{ color: '#00bcd4' }}>Terms of Service</a> and <a href="/privacy" style={{ color: '#00bcd4' }}>Privacy Policy</a></p>
+                <p style={{ fontSize: '14px', color: '#bbb' }}>By logging in, you agree to our <a href="/terms" style={{ color: '#e50914' }}>Terms of Service</a> and <a href="/privacy" style={{ color: '#e50914' }}>Privacy Policy</a></p>
               </div>
             </div>
           </Col>
